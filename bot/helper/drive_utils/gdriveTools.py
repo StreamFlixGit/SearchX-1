@@ -193,7 +193,7 @@ class GoogleDriveHelper:
             self.telegraph_content.append(msg)
 
         if len(self.telegraph_content) == 0:
-            return "Try Something Else 🧐(", None
+            return "Try Something Else 🧐", None
 
         for content in self.telegraph_content :
             self.path.append(telegra_ph.create_page(title = 'SearchX',
