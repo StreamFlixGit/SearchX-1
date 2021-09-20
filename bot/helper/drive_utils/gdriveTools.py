@@ -17,7 +17,7 @@ LOGGER = logging.getLogger(__name__)
 logging.getLogger('googleapiclient.discovery').setLevel(logging.ERROR)
 
 SIZE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
-TELEGRAPHLIMIT = 95
+TELEGRAPHLIMIT = 100
 
 class GoogleDriveHelper:
     def __init__(self, name=None, listener=None):
@@ -165,18 +165,18 @@ class GoogleDriveHelper:
                         add_drive_title = False
                     if file.get('mimeType') == "application/vnd.google-apps.folder":  # Detect Whether Current Entity is a Folder or File.
                         msg += f"🗃️<code>{file.get('name')}</code> <b>(folder)</b><br>" \
-                               f"<b><a href='https://drive.google.com/drive/folders/{file.get('id')}'>Google Drive link</a></b>"
+                               f"<b><a href='https://drive.google.com/drive/folders/{file.get('id')}'>Drive Link</a></b>"
                         if INDEX_URL[INDEX] is not None:
                             url_path = "/".join([requests.utils.quote(n, safe='') for n in self.get_recursive_list(file, parent_id)])
                             url = f'{INDEX_URL[INDEX]}/{url_path}/'
-                            msg += f'<b> | <a href="{url}">Index link</a></b>'
+                            msg += f'<b> | <a href="{url}">Index Link</a></b>'
                     else:
                         msg += f"<code>{file.get('name')}</code> <b>({self.get_readable_file_size(file.get('size'))})</b><br>" \
-                               f"<b><a href='https://drive.google.com/uc?id={file.get('id')}&export=download'>Google Drive link</a></b>"
+                               f"<b><a href='https://drive.google.com/uc?id={file.get('id')}&export=download'>Drive Link</a></b>"
                         if INDEX_URL[INDEX] is not None:
                             url_path = "/".join([requests.utils.quote(n, safe ='') for n in self.get_recursive_list(file, parent_id)])
                             url = f'{INDEX_URL[INDEX]}/{url_path}'
-                            msg += f'<b> | <a href="{url}">Index link</a></b>'
+                            msg += f'<b> | <a href="{url}">Index Link</a></b>'
                     msg += '<br><br>'
                     content_count += 1
                     if (content_count >= TELEGRAPHLIMIT):
@@ -203,12 +203,12 @@ class GoogleDriveHelper:
         if self.num_of_path > 1:
             self.edit_telegraph()
 
-        msg = f"Found {content_count}" + ("+" if content_count >= 90 else "") + " results"
+        msg = f"Found {content_count}" + ("+" if content_count >= 100 else "") + " results"
 
         if reached_max_limit:
-            msg += ". (Only showing top 90 results. Omitting remaining results)"
+            msg += ". Only Showing 100 Results. [Omitting Remaining Results]"
 
         buttons = button_builder.ButtonMaker()
-        buttons.buildbutton("Click Here for results", f"https://telegra.ph/{self.path[0]}")
+        buttons.buildbutton("Click Here For Results", f"https://telegra.ph/{self.path[0]}")
 
         return msg, InlineKeyboardMarkup(buttons.build_menu(1))
